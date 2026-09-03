@@ -42,6 +42,7 @@
     <hr>
     <p>
         <a href="<%= request.getContextPath() %>/home">Trang chu</a> |
+        <a href="<%= request.getContextPath() %>/profile">Profile</a> |
         <a href="<%= request.getContextPath() %>/admin/products">Quan ly san pham (CRUD)</a> |
         <a href="<%= request.getContextPath() %>/admin/categories">Quan ly Category (JPA)</a> |
         <a href="<%= request.getContextPath() %>/logout">Dang xuat</a>

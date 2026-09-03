@@ -34,6 +34,10 @@
         <filter-name>authFilter</filter-name>
         <url-pattern>/admin/*</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern>/profile</url-pattern>
+    </filter-mapping>
 
     <!-- Error Pages -->
     <error-page>

@@ -5,6 +5,7 @@
 		https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
 
 	<persistence-unit name="jpa-hibernate-mysql">
+		<class>vn.iotstar.entity.User</class>
 		<class>vn.iotstar.entity.Category</class>
 		<class>vn.iotstar.entity.Video</class>
 		<class>vn.iotstar.entity.Product</class>

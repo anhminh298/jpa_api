@@ -3,6 +3,7 @@ package vn.iotstar.service;
 import jakarta.mail.MessagingException;
 import vn.iotstar.constant.AppConstant;
 import vn.iotstar.dao.UserDAO;
+import vn.iotstar.dto.UpdateProfileDTO;
 import vn.iotstar.entity.User;
 import vn.iotstar.utils.EmailService;
 import vn.iotstar.utils.PasswordUtil;
@@ -11,14 +12,77 @@ import java.util.Random;
 
 /**
  * Tang Business Logic cho User.
- * Xu ly nghiep vu: dang nhap, dang ky, xac thuc OTP, quen mat khau.
+ * Xu ly nghiep vu: dang nhap, dang ky, xac thuc OTP, quen mat khau, profile.
  * 
  * QUAN TRONG:
  * - Password luon duoc hash truoc khi luu vao DB
  * - OTP co loai (ACTIVATION / RESET_PASSWORD) va thoi han het han
+ * - Profile update bao gom: fullname, phone, image
  */
 public class UserService {
     private UserDAO userDAO = new UserDAO();
+
+    // ==================== PROFILE ====================
+
+    /**
+     * Lay thong tin profile cua user theo id.
+     * @param userId id cua user
+     * @return User hoac null neu khong tim thay
+     */
+    public User getProfile(int userId) {
+        return userDAO.findById(userId);
+    }
+
+    /**
+     * Cap nhat profile user.
+     * Validate fullname va phone truoc khi luu.
+     * 
+     * @param userId id cua user can update
+     * @param dto chua fullname va phone moi
+     * @param newImageFilename ten file anh moi (null neu khong upload)
+     * @return User da cap nhat, hoac null neu that bai
+     * @throws IllegalArgumentException neu validate that bai
+     */
+    public User updateProfile(int userId, UpdateProfileDTO dto, String newImageFilename) {
+        // Validate fullname
+        if (dto.getFullname() == null || dto.getFullname().trim().isEmpty()) {
+            throw new IllegalArgumentException("Ho ten khong duoc de trong!");
+        }
+
+        // Validate phone (neu co)
+        if (dto.getPhone() != null && !dto.getPhone().trim().isEmpty()) {
+            String phone = dto.getPhone().trim();
+            // Kiem tra dinh dang so dien thoai (chi cho phep so va dau +)
+            if (!phone.matches("^[+]?[0-9]{9,15}$")) {
+                throw new IllegalArgumentException("So dien thoai khong hop le! (9-15 chu so)");
+            }
+        }
+
+        // Load user tu DB
+        User user = userDAO.findById(userId);
+        if (user == null) {
+            return null;
+        }
+
+        // Cap nhat thong tin
+        user.setFullname(dto.getFullname().trim());
+
+        if (dto.getPhone() != null && !dto.getPhone().trim().isEmpty()) {
+            user.setPhone(dto.getPhone().trim());
+        } else {
+            user.setPhone(null);
+        }
+
+        // Cap nhat image neu co upload moi
+        if (newImageFilename != null && !newImageFilename.isEmpty()) {
+            user.setImage(newImageFilename);
+        }
+
+        // Luu vao DB
+        return userDAO.update(user);
+    }
+
+    // ==================== AUTHENTICATION ====================
 
     /**
      * Xac thuc dang nhap.
@@ -109,7 +173,7 @@ public class UserService {
         if (user == null) return false;
         if (user.getOtp() == null) return false;
         if (!user.getOtp().equals(otp)) return false;
-        if (System.currentTimeMillis() > user.getOtpExpiredAt()) return false;
+        if (user.getOtpExpiredAt() == null || System.currentTimeMillis() > user.getOtpExpiredAt()) return false;
 
         // Kiem tra loai OTP phai la ACTIVATION
         if (!AppConstant.OTP_TYPE_ACTIVATION.equals(user.getOtpType())) return false;
@@ -154,7 +218,7 @@ public class UserService {
         User user = userDAO.findByEmail(email);
         if (user == null) return false;
         if (user.getOtp() == null || !user.getOtp().equals(otp)) return false;
-        if (System.currentTimeMillis() > user.getOtpExpiredAt()) return false;
+        if (user.getOtpExpiredAt() == null || System.currentTimeMillis() > user.getOtpExpiredAt()) return false;
 
         // Kiem tra loai OTP phai la RESET_PASSWORD
         if (!AppConstant.OTP_TYPE_RESET_PASSWORD.equals(user.getOtpType())) return false;

@@ -1,6 +1,7 @@
 package vn.iotstar.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -28,14 +29,32 @@ public class Category implements Serializable {
 	@NotEmpty(message = "Không được phép rỗng")
 	private String categoryname;
 
+	@Column(name = "description", columnDefinition = "nvarchar(500) null")
+	private String description;
+
 	@Column(name = "Images", columnDefinition = "nvarchar(500) null")
 	private String images;
 
 	private int status;
 
+	@Column(name = "createdAt")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdAt;
+
 	// bi-directional many-to-one association to Video
 	@OneToMany(mappedBy = "category")
 	private List<Video> videos;
+
+	// bi-directional many-to-one association to Product
+	@OneToMany(mappedBy = "category")
+	private List<Product> products;
+
+	@PrePersist
+	protected void onCreate() {
+		if (createdAt == null) {
+			createdAt = new Date();
+		}
+	}
 
 	public Video addVideo(Video video) {
 		getVideos().add(video);

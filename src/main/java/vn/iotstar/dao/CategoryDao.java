@@ -9,6 +9,13 @@ import jakarta.persistence.TypedQuery;
 import vn.iotstar.config.JPAConfig;
 import vn.iotstar.entity.Category;
 
+/**
+ * CategoryDao - Truy van database bang JPA/Hibernate.
+ * Thuoc tang Data Access trong kien truc 3 tang.
+ * 
+ * Tat ca method deu phai dong EntityManager trong block finally
+ * de tranh resource leak.
+ */
 public class CategoryDao implements ICategoryDao {
 
 	@Override
@@ -70,8 +77,11 @@ public class CategoryDao implements ICategoryDao {
 	@Override
 	public Category findById(int cateid) {
 		EntityManager enma = JPAConfig.getEntityManager();
-		Category category = enma.find(Category.class, cateid);
-		return category;
+		try {
+			return enma.find(Category.class, cateid);
+		} finally {
+			enma.close(); // FIX: truoc day khong dong EntityManager
+		}
 	}
 
 	@Override
@@ -94,34 +104,52 @@ public class CategoryDao implements ICategoryDao {
 	@Override
 	public List<Category> findAll() {
 		EntityManager enma = JPAConfig.getEntityManager();
-		TypedQuery<Category> query = enma.createNamedQuery("Category.findAll", Category.class);
-		return query.getResultList();
+		try {
+			TypedQuery<Category> query = enma.createNamedQuery("Category.findAll", Category.class);
+			return query.getResultList();
+		} finally {
+			enma.close(); // FIX: truoc day khong dong EntityManager
+		}
 	}
 
 	@Override
 	public List<Category> searchByName(String catname) {
 		EntityManager enma = JPAConfig.getEntityManager();
-		String jpql = "SELECT c FROM Category c WHERE c.categoryname like :catname";
-		TypedQuery<Category> query = enma.createQuery(jpql, Category.class);
-		query.setParameter("catname", "%" + catname + "%");
-		return query.getResultList();
+		try {
+			String jpql = "SELECT c FROM Category c WHERE c.categoryname like :catname";
+			TypedQuery<Category> query = enma.createQuery(jpql, Category.class);
+			query.setParameter("catname", "%" + catname + "%");
+			return query.getResultList();
+		} finally {
+			enma.close(); // FIX: truoc day khong dong EntityManager
+		}
 	}
 
 	@Override
 	public List<Category> findAll(int page, int pagesize) {
 		EntityManager enma = JPAConfig.getEntityManager();
-		TypedQuery<Category> query = enma.createNamedQuery("Category.findAll", Category.class);
-		query.setFirstResult(page * pagesize);
-		query.setMaxResults(pagesize);
-		return query.getResultList();
+		try {
+			TypedQuery<Category> query = enma.createNamedQuery("Category.findAll", Category.class);
+			// FIX: (page - 1) * pagesize thay vi page * pagesize
+			// De thong nhat voi ProductJpaDao
+			query.setFirstResult((page - 1) * pagesize);
+			query.setMaxResults(pagesize);
+			return query.getResultList();
+		} finally {
+			enma.close();
+		}
 	}
 
 	@Override
 	public int count() {
 		EntityManager enma = JPAConfig.getEntityManager();
-		String jpql = "SELECT count(c) FROM Category c";
-		Query query = enma.createQuery(jpql);
-		return ((Long) query.getSingleResult()).intValue();
+		try {
+			String jpql = "SELECT count(c) FROM Category c";
+			Query query = enma.createQuery(jpql);
+			return ((Long) query.getSingleResult()).intValue();
+		} finally {
+			enma.close(); // FIX: truoc day khong dong EntityManager
+		}
 	}
 
 }

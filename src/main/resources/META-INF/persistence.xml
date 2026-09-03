@@ -7,11 +7,14 @@
 	<persistence-unit name="jpa-hibernate-mysql">
 		<class>vn.iotstar.entity.Category</class>
 		<class>vn.iotstar.entity.Video</class>
+		<class>vn.iotstar.entity.Product</class>
 		<properties>
 			<property name="jakarta.persistence.jdbc.url" 
-				value="jdbc:sqlserver://localhost:1433;databaseName=jakartaJPA;integratedSecurity=true;trustServerCertificate=true;encrypt=true"/>
+				value="jdbc:sqlserver://localhost:1433;databaseName=jakartaJPA;trustServerCertificate=true;encrypt=true"/>
 			<property name="jakarta.persistence.jdbc.driver" 
 				value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+			<property name="jakarta.persistence.jdbc.user" value="sa"/>
+			<property name="jakarta.persistence.jdbc.password" value="Sa@123456"/>
 			<property name="hibernate.show_sql" value="true"/>
 			<property name="hibernate.format_sql" value="true"/>
 			<property name="hibernate.hbm2ddl.auto" value="update"/>

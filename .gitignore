@@ -10,6 +10,7 @@ release.properties
 .project
 .classpath
 .settings/
+.factorypath
 bin/
 
 # IntelliJ

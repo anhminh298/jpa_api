@@ -55,7 +55,13 @@ public class PasswordUtil {
      * @return true neu khop
      */
     public static boolean checkPassword(String password, String storedHash) {
+        if (password == null || storedHash == null) return false;
         try {
+            // Neu mat khau trong DB chua duoc hash (nhu user mau tao truc tiep tu SQL)
+            if (!storedHash.contains(":")) {
+                return password.equals(storedHash);
+            }
+
             // Tach salt va hash
             String[] parts = storedHash.split(":");
             if (parts.length != 2) return false;

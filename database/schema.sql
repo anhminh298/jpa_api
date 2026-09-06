@@ -92,9 +92,9 @@ GO
 -- De test nhanh, ban co the dang ky user moi qua form Register
 IF NOT EXISTS (SELECT 1 FROM users)
 BEGIN
-    -- Password: admin123 (plaintext de test - nen doi sang hash qua form Register)
+    -- Password: admin123 (da hash SHA-256 + salt)
     INSERT INTO users (username, password, fullname, email, isActive) VALUES
-    ('admin', 'admin123', 'Admin User', 'admin@example.com', 1);
+    ('admin', 'yqDlW9IXEoEt49nQae36xg==:gbFPlQYuAzHwgk8GcTJyezH456nzaWUCL6Hei3wT/HE=', 'Admin User', 'admin@example.com', 1);
 END
 GO
 

@@ -35,6 +35,12 @@ public class LoginCookieServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession currentSession = request.getSession(false);
+        if (currentSession != null && currentSession.getAttribute("user") != null) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
+
         // Doc Cookie tu request
         String savedUsername = "";
         Cookie[] cookies = request.getCookies();
@@ -88,8 +94,8 @@ public class LoginCookieServlet extends HttpServlet {
                 response.addCookie(usernameCookie);
             }
 
-            // Redirect den trang dashboard
-            response.sendRedirect(request.getContextPath() + "/dashboard");
+            // Redirect den trang chu /home
+            response.sendRedirect(request.getContextPath() + "/home");
 
         } else {
             // === DANG NHAP THAT BAI ===

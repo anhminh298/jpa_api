@@ -249,7 +249,7 @@
             <!-- Buttons -->
             <div class="btn-group">
                 <button type="submit" class="btn btn-primary">Cap nhat</button>
-                <a href="<%= request.getContextPath() %>/dashboard" class="btn btn-secondary">Quay lai</a>
+                <a href="<%= request.getContextPath() %>/home" class="btn btn-secondary">Quay lại Trang chủ</a>
             </div>
 
         </form>
@@ -258,9 +258,10 @@
 
     <!-- Navigation links -->
     <div class="nav-links">
-        <a href="<%= request.getContextPath() %>/dashboard">Dashboard</a> |
-        <a href="<%= request.getContextPath() %>/home">Trang chu</a> |
-        <a href="<%= request.getContextPath() %>/logout">Dang xuat</a>
+        <a href="<%= request.getContextPath() %>/home">🏠 Trang chủ</a> |
+        <a href="<%= request.getContextPath() %>/product">📦 Sản phẩm</a> |
+        <a href="<%= request.getContextPath() %>/dashboard">📊 Dashboard</a> |
+        <a href="<%= request.getContextPath() %>/logout">🚪 Đăng xuất</a>
     </div>
 
 </div>

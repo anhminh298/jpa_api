@@ -31,6 +31,11 @@ public class LoginSessionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+        }
         request.getRequestDispatcher("/views/login-session.jsp").forward(request, response);
     }
 
@@ -66,8 +71,8 @@ public class LoginSessionServlet extends HttpServlet {
             // Set thoi gian timeout: 30 phut (tinh bang giay)
             session.setMaxInactiveInterval(30 * 60);
 
-            // Redirect den dashboard
-            response.sendRedirect(request.getContextPath() + "/dashboard");
+            // Redirect den trang chu /home
+            response.sendRedirect(request.getContextPath() + "/home");
 
         } else {
             // === DANG NHAP THAT BAI ===

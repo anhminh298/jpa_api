@@ -21,7 +21,23 @@ public class HomeServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// Lay 10 san pham moi nhat
+		HttpSession session = req.getSession(false);
+		boolean isLoggedIn = (session != null && session.getAttribute("user") != null);
+
+		// Neu chua dang nhap: bat buoc chuyen ve trang dang nhap
+		if (!isLoggedIn) {
+			resp.sendRedirect(req.getContextPath() + "/login-session");
+			return;
+		}
+
+		// Neu truy cap "/" ma da dang nhap -> chuyen den "/home"
+		String servletPath = req.getServletPath();
+		if ("/".equals(servletPath)) {
+			resp.sendRedirect(req.getContextPath() + "/home");
+			return;
+		}
+
+		// Da dang nhap -> Lay 10 san pham moi nhat va hien thi
 		List<Product> newestProducts = productService.findNewest(10);
 		req.setAttribute("newestProducts", newestProducts);
 		req.getRequestDispatcher("/index.jsp").forward(req, resp);

@@ -101,4 +101,12 @@ public class User implements Serializable {
 
     public String getOtpType() { return otpType; }
     public void setOtpType(String otpType) { this.otpType = otpType; }
+
+    /**
+     * Kiem tra nguoi dung co phai la Admin hay khong.
+     * Admin co username la "admin".
+     */
+    public boolean isAdmin() {
+        return "admin".equalsIgnoreCase(this.username);
+    }
 }

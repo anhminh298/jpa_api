@@ -21,11 +21,23 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!-- Authentication Filter - kiem tra dang nhap truoc khi vao dashboard va products -->
+    <!-- Authentication Filter - kiem tra dang nhap truoc khi vao dashboard, home, products va profile -->
     <filter>
         <filter-name>authFilter</filter-name>
         <filter-class>vn.iotstar.filter.AuthFilter</filter-class>
     </filter>
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern>/home</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern>/product</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern>/product/*</url-pattern>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>authFilter</filter-name>
         <url-pattern>/dashboard</url-pattern>

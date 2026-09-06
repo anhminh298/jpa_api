@@ -3,45 +3,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Xác nhận OTP</title>
-<style>
-    body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .container { background-color: white; padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-    h2 { color: #333; }
-    .form-group { margin-bottom: 20px; }
-    input[type="text"] { width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 24px; text-align: center; letter-spacing: 5px; }
-    button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-bottom: 10px;}
-    button:hover { background-color: #218838; }
-    .btn-resend { background-color: #6c757d; }
-    .btn-resend:hover { background-color: #5a6268; }
-    .error { color: red; margin-bottom: 10px; }
-    .success { color: green; margin-bottom: 10px; }
-    .info { color: #555; margin-bottom: 15px; }
-</style>
+    <meta charset="UTF-8">
+    <title>Xác nhận mã OTP</title>
 </head>
 <body>
-    <div class="container">
-        <h2>Xác nhận mã OTP</h2>
-        <div class="info">
-            Mã OTP đã được gửi đến email: <b>${sessionScope.otpEmail}</b>
-        </div>
-        <c:if test="${not empty error}">
-            <div class="error">${error}</div>
-        </c:if>
-        <c:if test="${not empty message}">
-            <div class="success">${message}</div>
-        </c:if>
-        <form action="${pageContext.request.contextPath}/verify-otp" method="post">
-            <div class="form-group">
-                <input type="text" name="otp" maxlength="6" placeholder="Nhập mã OTP 6 số" required>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow border-0 rounded-4 text-center">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-success-subtle text-success rounded-circle mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-shield-check fs-2"></i>
+                        </div>
+                        <h3 class="fw-bold text-dark mb-2">Xác thực mã OTP</h3>
+                        <p class="text-muted small mb-4">
+                            Mã xác nhận 6 số đã được gửi tới email:<br>
+                            <strong class="text-primary">${sessionScope.otpEmail}</strong>
+                        </p>
+
+                        <c:if test="${not empty error}">
+                            <div class="alert alert-danger alert-dismissible fade show small" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>${error}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </c:if>
+
+                        <form action="${pageContext.request.contextPath}/verify-otp" method="post" 
+                              class="needs-validation mb-3" novalidate>
+                            
+                            <div class="mb-4">
+                                <label for="otp" class="form-label fw-semibold">Mã OTP (6 chữ số)</label>
+                                <input type="text" class="form-control form-control-lg text-center fw-bold fs-3" 
+                                       id="otp" name="otp" value="${otp}" 
+                                       placeholder="------" maxlength="6" pattern="^[0-9]{6}$" 
+                                       style="letter-spacing: 8px;" required autofocus>
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập đúng mã OTP gồm 6 chữ số.
+                                </div>
+                            </div>
+
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-success btn-lg fw-semibold shadow-sm">
+                                    <i class="bi bi-check-circle me-1"></i>Xác nhận kích hoạt
+                                </button>
+                            </div>
+                        </form>
+
+                        <form action="${pageContext.request.contextPath}/verify-otp" method="post" class="d-inline-block">
+                            <input type="hidden" name="action" value="resend">
+                            <button type="submit" class="btn btn-link text-decoration-none text-muted small">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Chưa nhận được mã? Gửi lại OTP
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <button type="submit">Xác nhận</button>
-        </form>
-        <form action="${pageContext.request.contextPath}/verify-otp" method="post">
-            <input type="hidden" name="action" value="resend">
-            <button type="submit" class="btn-resend">Gửi lại OTP</button>
-        </form>
+        </div>
     </div>
 </body>
 </html>

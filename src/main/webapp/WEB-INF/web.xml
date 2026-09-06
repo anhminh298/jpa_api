@@ -21,6 +21,18 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!-- SiteMesh 3 Decorator Filter -->
+    <filter>
+        <filter-name>sitemesh</filter-name>
+        <filter-class>vn.iotstar.filter.SiteMeshFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>sitemesh</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+
     <!-- Authentication Filter - kiem tra dang nhap truoc khi vao dashboard, home, products va profile -->
     <filter>
         <filter-name>authFilter</filter-name>
@@ -32,11 +44,27 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>authFilter</filter-name>
+        <url-pattern>/products</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern>/products/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
         <url-pattern>/product</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>authFilter</filter-name>
         <url-pattern>/product/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern>/cart</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern>/orders</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>authFilter</filter-name>

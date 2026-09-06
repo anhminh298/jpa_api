@@ -1,12 +1,19 @@
 package vn.iotstar.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.io.Serializable;
 
 /**
- * DTO cho form dang nhap.
+ * DTO cho form đăng nhập có validation annotations.
  */
 public class LoginDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @NotBlank(message = "Tên đăng nhập không được để trống!")
     private String username;
+
+    @NotBlank(message = "Mật khẩu không được để trống!")
     private String password;
 
     public LoginDTO() {}

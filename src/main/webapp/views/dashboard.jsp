@@ -3,8 +3,8 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
     User user = (User) session.getAttribute("user");
-    if (user == null) {
-        response.sendRedirect(request.getContextPath() + "/login-session");
+    if (user == null || !user.isAdmin()) {
+        response.sendRedirect(request.getContextPath() + "/home?error=unauthorized");
         return;
     }
 %>
@@ -12,75 +12,113 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Bảng điều khiển - Dashboard</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
-        header { background-color: #2c3e50; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { margin: 0; font-size: 1.4rem; }
-        nav a { color: #ecf0f1; text-decoration: none; margin-left: 1.2rem; font-size: 0.95rem; font-weight: 500; }
-        nav a:hover { color: #3498db; }
-        .container { max-width: 800px; margin: 2.5rem auto; padding: 0 1rem; }
-        .card { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 2rem; }
-        .welcome-title { color: #2c3e50; margin-top: 0; }
-        .badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
-        .badge-admin { background-color: #e74c3c; color: white; }
-        .badge-user { background-color: #3498db; color: white; }
-        .info-group { margin: 1.5rem 0; line-height: 1.8; }
-        .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-        .action-btn { display: block; text-align: center; padding: 1rem; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; color: #2c3e50; text-decoration: none; font-weight: 600; transition: all 0.2s; }
-        .action-btn:hover { background-color: #3498db; color: white; border-color: #3498db; }
-        .action-btn.admin-action { border-color: #f5c6cb; background-color: #fff8f8; color: #c0392b; }
-        .action-btn.admin-action:hover { background-color: #e74c3c; color: white; border-color: #e74c3c; }
-    </style>
+    <title>Admin Dashboard</title>
 </head>
 <body>
-    <header>
-        <h1>JPA API - Dashboard</h1>
-        <nav>
-            <a href="${pageContext.request.contextPath}/home">Trang chủ</a>
-            <a href="${pageContext.request.contextPath}/product">Sản phẩm</a>
-            <a href="${pageContext.request.contextPath}/profile">Profile</a>
-            <c:if test="${sessionScope.user.admin}">
-                <a href="${pageContext.request.contextPath}/admin/products">Quản lý SP</a>
-                <a href="${pageContext.request.contextPath}/admin/categories">Quản lý Danh mục</a>
-            </c:if>
-            <a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
-        </nav>
-    </header>
+    <div class="container py-2">
+        <!-- Header Banner -->
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <div>
+                <h2 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-speedometer2 me-2 text-primary"></i>Bảng điều khiển Quản trị (Dashboard)
+                </h2>
+                <p class="text-muted mb-0 small">Tổng hợp dữ liệu thống kê và lối tắt quản trị hệ thống</p>
+            </div>
+            <div>
+                <span class="badge bg-danger fs-6 px-3 py-2">
+                    <i class="bi bi-shield-check me-1"></i>Admin: <%= user.getFullname() %>
+                </span>
+            </div>
+        </div>
 
-    <div class="container">
-        <div class="card">
-            <h2 class="welcome-title">Xin chào, <%= user.getFullname() %>!</h2>
-            
-            <p>
-                Vai trò: 
-                <% if (user.isAdmin()) { %>
-                    <span class="badge badge-admin">Quản trị viên (Admin)</span>
-                <% } else { %>
-                    <span class="badge badge-user">Người dùng (Khách hàng)</span>
-                <% } %>
-            </p>
-
-            <div class="info-group">
-                <p><strong>Tên đăng nhập:</strong> <%= user.getUsername() %></p>
-                <p><strong>Email:</strong> <%= user.getEmail() %></p>
-                <% if (user.getPhone() != null && !user.getPhone().isEmpty()) { %>
-                    <p><strong>Số điện thoại:</strong> <%= user.getPhone() %></p>
-                <% } %>
+        <!-- KPI Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 border-start border-primary border-4 rounded-3 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted fw-semibold small text-uppercase">Tổng Sản Phẩm</span>
+                                <h2 class="fw-bold text-dark my-2">${totalProducts != null ? totalProducts : 0}</h2>
+                                <span class="text-success small fw-medium"><i class="bi bi-arrow-up me-1"></i>Đang lưu hành</span>
+                            </div>
+                            <div class="bg-primary-subtle text-primary p-3 rounded-circle">
+                                <i class="bi bi-box-seam fs-3"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 1.5rem 0;">
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 border-start border-success border-4 rounded-3 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted fw-semibold small text-uppercase">Tổng Danh Mục</span>
+                                <h2 class="fw-bold text-dark my-2">${totalCategories != null ? totalCategories : 0}</h2>
+                                <span class="text-success small fw-medium"><i class="bi bi-check-circle me-1"></i>Ngành hàng</span>
+                            </div>
+                            <div class="bg-success-subtle text-success p-3 rounded-circle">
+                                <i class="bi bi-tags fs-3"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <h3>Lựa chọn chức năng:</h3>
-            <div class="actions-grid">
-                <a href="${pageContext.request.contextPath}/home" class="action-btn">🏠 Trang chủ mua sắm</a>
-                <a href="${pageContext.request.contextPath}/product" class="action-btn">📦 Danh sách sản phẩm</a>
-                <a href="${pageContext.request.contextPath}/profile" class="action-btn">👤 Quản lý thông tin cá nhân</a>
-                
-                <c:if test="${sessionScope.user.admin}">
-                    <a href="${pageContext.request.contextPath}/admin/products" class="action-btn admin-action">⚙️ Quản lý sản phẩm (CRUD)</a>
-                    <a href="${pageContext.request.contextPath}/admin/categories" class="action-btn admin-action">📁 Quản lý danh mục</a>
-                </c:if>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 border-start border-warning border-4 rounded-3 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="text-muted fw-semibold small text-uppercase">Hệ Thống</span>
+                                <h2 class="fw-bold text-dark my-2">JPA / Hibernate</h2>
+                                <span class="text-info small fw-medium"><i class="bi bi-cpu me-1"></i>Jakarta EE 10</span>
+                            </div>
+                            <div class="bg-warning-subtle text-warning p-3 rounded-circle">
+                                <i class="bi bi-hdd-network fs-3"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="card-title mb-0 fw-bold text-dark">
+                    <i class="bi bi-lightning-charge-fill me-2 text-warning"></i>Thao tác Nhanh
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="${pageContext.request.contextPath}/admin/products" class="btn btn-outline-primary w-100 py-3 d-flex flex-column align-items-center shadow-sm">
+                            <i class="bi bi-box-seam fs-3 mb-1"></i>
+                            <span class="fw-semibold">Quản lý Sản phẩm</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="${pageContext.request.contextPath}/admin/product/add" class="btn btn-outline-success w-100 py-3 d-flex flex-column align-items-center shadow-sm">
+                            <i class="bi bi-plus-circle fs-3 mb-1"></i>
+                            <span class="fw-semibold">Thêm Sản phẩm</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="${pageContext.request.contextPath}/admin/categories" class="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center shadow-sm">
+                            <i class="bi bi-tags fs-3 mb-1"></i>
+                            <span class="fw-semibold">Quản lý Category</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="${pageContext.request.contextPath}/admin/category/add" class="btn btn-outline-warning w-100 py-3 d-flex flex-column align-items-center shadow-sm text-dark">
+                            <i class="bi bi-folder-plus fs-3 mb-1"></i>
+                            <span class="fw-semibold">Thêm Category</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

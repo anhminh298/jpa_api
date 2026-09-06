@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+    <decorator-prefix></decorator-prefix>
+
+    <!-- Exclude static resources and binary streams -->
+    <mapping path="/image*" exclude="true" />
+    <mapping path="/uploads/*" exclude="true" />
+    <mapping path="/assets/*" exclude="true" />
+    <mapping path="/static/*" exclude="true" />
+    <mapping path="*.css" exclude="true" />
+    <mapping path="*.js" exclude="true" />
+    <mapping path="*.png" exclude="true" />
+    <mapping path="*.jpg" exclude="true" />
+    <mapping path="*.jpeg" exclude="true" />
+    <mapping path="*.webp" exclude="true" />
+    <mapping path="/WEB-INF/*" exclude="true" />
+    <mapping path="/views/decorators/*" exclude="true" />
+    <mapping path="/views/*" exclude="true" />
+
+    <!-- Apply Bootstrap 5 Decorator to all pages -->
+    <mapping path="/*" decorator="/WEB-INF/decorators/web.jsp" />
+</sitemesh>

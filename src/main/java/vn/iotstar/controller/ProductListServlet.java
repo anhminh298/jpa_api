@@ -12,9 +12,9 @@ import vn.iotstar.service.ProductServiceImpl;
 
 /**
  * Servlet hien thi tat ca san pham voi phan trang (6 SP/trang).
- * URL: /product
+ * URL: /products (va /product)
  */
-@WebServlet("/product")
+@WebServlet(urlPatterns = { "/products", "/product" })
 public class ProductListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;

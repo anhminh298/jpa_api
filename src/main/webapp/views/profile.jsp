@@ -1,270 +1,157 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="vn.iotstar.entity.User" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
-    // Lay user tu request attribute (duoc set boi ProfileServlet)
     User profileUser = (User) request.getAttribute("profileUser");
     if (profileUser == null) {
         response.sendRedirect(request.getContextPath() + "/login-session");
         return;
     }
-    
-    String error = (String) request.getAttribute("error");
-    String success = request.getParameter("success");
 %>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Profile - <%= profileUser.getFullname() %></title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        .container {
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .profile-card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-            padding: 40px;
-        }
-        .profile-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .profile-header h2 {
-            font-size: 24px;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-        .profile-header p {
-            color: #7f8c8d;
-            font-size: 14px;
-        }
-        .avatar-section {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .avatar-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #e0e0e0;
-            background-color: #f0f0f0;
-        }
-        .avatar-placeholder {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background-color: #3498db;
-            color: #fff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            font-weight: bold;
-            border: 4px solid #e0e0e0;
-        }
-        .alert {
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 14px;
-        }
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group input[type="tel"] {
-            width: 100%;
-            padding: 10px 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 15px;
-            transition: border-color 0.2s;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-        .form-group input[readonly] {
-            background-color: #f8f9fa;
-            color: #6c757d;
-            cursor: not-allowed;
-        }
-        .form-group input[type="file"] {
-            padding: 8px;
-            font-size: 14px;
-        }
-        .form-group .hint {
-            font-size: 12px;
-            color: #95a5a6;
-            margin-top: 4px;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 24px;
-            border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            text-decoration: none;
-        }
-        .btn-primary {
-            background-color: #3498db;
-            color: #fff;
-        }
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
-        .btn-secondary {
-            background-color: #95a5a6;
-            color: #fff;
-        }
-        .btn-secondary:hover {
-            background-color: #7f8c8d;
-        }
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 10px;
-        }
-        .nav-links {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .nav-links a {
-            color: #3498db;
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 14px;
-        }
-        .nav-links a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>Hồ sơ cá nhân - <%= profileUser.getFullname() != null ? profileUser.getFullname() : profileUser.getUsername() %></title>
 </head>
 <body>
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Navigation Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/home" class="text-decoration-none">Trang chủ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Hồ sơ cá nhân</li>
+                    </ol>
+                </nav>
 
-<div class="container">
-    <div class="profile-card">
+                <div class="card shadow border-0 rounded-4 overflow-hidden">
+                    <!-- Profile Card Header with Gradient -->
+                    <div class="card-header bg-gradient bg-primary text-white p-4 text-center">
+                        <div class="position-relative d-inline-block mb-3">
+                            <c:choose>
+                                <c:when test="${not empty profileUser.image}">
+                                    <img src="${pageContext.request.contextPath}/image?fname=users/${profileUser.image}" 
+                                         alt="Avatar" class="rounded-circle shadow border border-3 border-white" 
+                                         style="width: 120px; height: 120px; object-fit: cover;"
+                                         onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${profileUser.fullname}&size=120&background=random';">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="https://ui-avatars.com/api/?name=${profileUser.fullname}&size=120&background=0D6EFD&color=fff" 
+                                         alt="Avatar" class="rounded-circle shadow border border-3 border-white" 
+                                         style="width: 120px; height: 120px; object-fit: cover;">
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                        <h4 class="fw-bold mb-1"><%= profileUser.getFullname() %></h4>
+                        <p class="mb-0 text-white-50 small">@<%= profileUser.getUsername() %>
+                            <c:if test="${profileUser.admin}">
+                                <span class="badge bg-danger ms-1">Quản trị viên</span>
+                            </c:if>
+                        </p>
+                    </div>
 
-        <div class="profile-header">
-            <h2>Thong tin ca nhan</h2>
-            <p>Cap nhat thong tin profile cua ban</p>
-        </div>
+                    <div class="card-body p-4 p-md-5">
+                        <c:if test="${not empty error}">
+                            <div class="alert alert-danger alert-dismissible fade show small" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>${error}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </c:if>
 
-        <!-- Avatar hien thi -->
-        <div class="avatar-section">
-            <% if (profileUser.getImage() != null && !profileUser.getImage().isEmpty()) { %>
-                <img src="<%= request.getContextPath() %>/image?fname=users/<%= profileUser.getImage() %>"
-                     alt="Avatar" class="avatar-img" />
-            <% } else { %>
-                <div class="avatar-placeholder">
-                    <%= profileUser.getFullname() != null && !profileUser.getFullname().isEmpty()
-                        ? profileUser.getFullname().substring(0, 1).toUpperCase() : "?" %>
+                        <h5 class="fw-bold text-dark border-bottom pb-2 mb-4">
+                            <i class="bi bi-person-lines-fill me-2 text-primary"></i>Thông tin tài khoản
+                        </h5>
+
+                        <form action="${pageContext.request.contextPath}/profile" method="post" 
+                              enctype="multipart/form-data" class="needs-validation" novalidate>
+                            
+                            <div class="row g-3 mb-3">
+                                <!-- Username (Readonly) -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Tên đăng nhập</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="bi bi-person text-muted"></i></span>
+                                        <input type="text" class="form-control bg-light" value="${profileUser.username}" readonly>
+                                    </div>
+                                    <div class="form-text text-muted small">Tên đăng nhập không thể thay đổi.</div>
+                                </div>
+
+                                <!-- Email (Readonly) -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Địa chỉ Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="bi bi-envelope text-muted"></i></span>
+                                        <input type="email" class="form-control bg-light" value="${profileUser.email}" readonly>
+                                    </div>
+                                    <div class="form-text text-muted small">Email định danh tài khoản.</div>
+                                </div>
+                            </div>
+
+                            <!-- Fullname (Editable) -->
+                            <div class="mb-3">
+                                <label for="fullname" class="form-label fw-semibold">
+                                    Họ và tên <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text bg-light"><i class="bi bi-card-text text-muted"></i></span>
+                                    <input type="text" class="form-control ${not empty fieldErrors['fullname'] ? 'is-invalid' : ''}" 
+                                           id="fullname" name="fullname" 
+                                           value="${profileUser.fullname}" 
+                                           placeholder="Nhập họ và tên" 
+                                           required minlength="2" maxlength="100">
+                                    <div class="invalid-feedback">
+                                        <c:out value="${fieldErrors['fullname'] != null ? fieldErrors['fullname'] : 'Vui lòng nhập họ và tên (từ 2 đến 100 ký tự).'}" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Phone (Editable) -->
+                            <div class="mb-3">
+                                <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text bg-light"><i class="bi bi-telephone text-muted"></i></span>
+                                    <input type="tel" class="form-control ${not empty fieldErrors['phone'] ? 'is-invalid' : ''}" 
+                                           id="phone" name="phone" 
+                                           value="${profileUser.phone}" 
+                                           placeholder="vd: 0912345678" 
+                                           pattern="^(0|\+84)(3[2-9]|5[25689]|7[06-9]|8[1-9]|9[0-9])[0-9]{7}$">
+                                    <div class="invalid-feedback">
+                                        <c:out value="${fieldErrors['phone'] != null ? fieldErrors['phone'] : 'Số điện thoại không hợp lệ (gồm 10 số di động VN).'}" />
+                                    </div>
+                                </div>
+                                <div class="form-text text-muted small">Định dạng 10 chữ số (vd: 0987654321 hoặc 0345678901).</div>
+                            </div>
+
+                            <!-- Avatar Upload -->
+                            <div class="mb-4">
+                                <label for="image" class="form-label fw-semibold">Thay đổi ảnh đại diện (Avatar)</label>
+                                <input type="file" class="form-control ${not empty fieldErrors['image'] ? 'is-invalid' : ''}" 
+                                       id="image" name="image" 
+                                       accept="image/png, image/jpeg, image/webp, image/gif">
+                                <div class="form-text text-muted small">
+                                    Định dạng hỗ trợ: JPG, JPEG, PNG, WEBP. Kích thước tối đa: 2MB.
+                                </div>
+                                <div class="invalid-feedback">
+                                    <c:out value="${fieldErrors['image'] != null ? fieldErrors['image'] : 'File ảnh không hợp lệ.'}" />
+                                </div>
+                            </div>
+
+                            <!-- Submit button -->
+                            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                <a href="${pageContext.request.contextPath}/home" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i>Về trang chủ
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                                    <i class="bi bi-save me-1"></i>Lưu thay đổi
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            <% } %>
+            </div>
         </div>
-
-        <!-- Thong bao -->
-        <% if ("1".equals(success)) { %>
-            <div class="alert alert-success">
-                Cap nhat profile thanh cong!
-            </div>
-        <% } %>
-
-        <% if (error != null && !error.isEmpty()) { %>
-            <div class="alert alert-error">
-                <%= error %>
-            </div>
-        <% } %>
-
-        <!-- Form cap nhat profile -->
-        <form method="post" 
-              action="<%= request.getContextPath() %>/profile"
-              enctype="multipart/form-data">
-
-            <!-- Email (readonly - khong cho sua) -->
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" value="<%= profileUser.getEmail() != null ? profileUser.getEmail() : "" %>" 
-                       readonly />
-                <p class="hint">Email khong the thay doi.</p>
-            </div>
-
-            <!-- Fullname -->
-            <div class="form-group">
-                <label>Ho va ten *</label>
-                <input type="text" name="fullname" 
-                       value="<%= profileUser.getFullname() != null ? profileUser.getFullname() : "" %>" 
-                       required />
-            </div>
-
-            <!-- Phone -->
-            <div class="form-group">
-                <label>So dien thoai</label>
-                <input type="tel" name="phone" 
-                       value="<%= profileUser.getPhone() != null ? profileUser.getPhone() : "" %>"
-                       placeholder="VD: 0901234567" />
-                <p class="hint">9-15 chu so, co the bat dau bang +</p>
-            </div>
-
-            <!-- Avatar upload -->
-            <div class="form-group">
-                <label>Anh dai dien</label>
-                <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" />
-                <p class="hint">Chap nhan: JPG, JPEG, PNG, WEBP. Toi da 2MB.</p>
-            </div>
-
-            <!-- Buttons -->
-            <div class="btn-group">
-                <button type="submit" class="btn btn-primary">Cap nhat</button>
-                <a href="<%= request.getContextPath() %>/home" class="btn btn-secondary">Quay lại Trang chủ</a>
-            </div>
-
-        </form>
-
     </div>
-
-    <!-- Navigation links -->
-    <div class="nav-links">
-        <a href="<%= request.getContextPath() %>/home">🏠 Trang chủ</a> |
-        <a href="<%= request.getContextPath() %>/product">📦 Sản phẩm</a> |
-        <a href="<%= request.getContextPath() %>/dashboard">📊 Dashboard</a> |
-        <a href="<%= request.getContextPath() %>/logout">🚪 Đăng xuất</a>
-    </div>
-
-</div>
-
 </body>
 </html>

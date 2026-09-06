@@ -11,102 +11,87 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Chi tiết sản phẩm - ${product.name}</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f6f9; }
-        header { background-color: #2c3e50; color: white; padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { margin: 0; font-size: 1.5rem; }
-        .user-greeting { font-size: 0.95rem; color: #ecf0f1; }
-        .user-badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; margin-left: 0.5rem; }
-        .badge-admin { background-color: #e74c3c; color: white; }
-        .badge-user { background-color: #27ae60; color: white; }
-        nav { background-color: #34495e; display: flex; justify-content: center; padding: 0.7rem; flex-wrap: wrap; }
-        nav a { color: #ecf0f1; text-decoration: none; padding: 0.5rem 1rem; margin: 0 0.3rem; border-radius: 4px; font-weight: 500; font-size: 0.95rem; }
-        nav a:hover { background-color: #1abc9c; color: white; }
-        nav a.admin-link { background-color: #c0392b; }
-        nav a.admin-link:hover { background-color: #e74c3c; }
-        .container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
-        .product-detail { display: flex; gap: 2.5rem; flex-wrap: wrap; }
-        .product-image { flex: 1; min-width: 300px; text-align: center; }
-        .product-image img { max-width: 100%; border-radius: 8px; border: 1px solid #eee; }
-        .product-info { flex: 1.2; min-width: 300px; }
-        .product-name { font-size: 1.8rem; margin-top: 0; color: #2c3e50; font-weight: 600; }
-        .product-price { color: #e74c3c; font-weight: bold; font-size: 1.8rem; margin: 0.8rem 0; }
-        .category-name { font-size: 1rem; color: #7f8c8d; margin-bottom: 0.8rem; }
-        .product-quantity { font-size: 1rem; color: #34495e; margin-bottom: 1rem; }
-        .product-desc { line-height: 1.7; color: #555; background: #fdfdfd; padding: 1rem; border-radius: 6px; border: 1px solid #f0f0f0; margin-bottom: 1.5rem; }
-        .btn-group { display: flex; gap: 1rem; align-items: center; }
-        .btn-back { display: inline-block; padding: 0.6rem 1.4rem; background-color: #95a5a6; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; }
-        .btn-back:hover { background-color: #7f8c8d; }
-        .btn-edit { display: inline-block; padding: 0.6rem 1.4rem; background-color: #f39c12; color: white; text-decoration: none; border-radius: 4px; font-weight: 500; }
-        .btn-edit:hover { background-color: #d68910; }
-        footer { background-color: #2c3e50; color: white; text-align: center; padding: 1.2rem; margin-top: 3rem; }
-    </style>
+    <title>Chi tiết: ${product.name}</title>
 </head>
 <body>
-    <header>
-        <h1>JPA API - Chi tiết sản phẩm</h1>
-        <div class="user-greeting">
-            Xin chào, <strong>${sessionScope.user.fullname}</strong>
-            <c:choose>
-                <c:when test="${sessionScope.user.admin}">
-                    <span class="user-badge badge-admin">Admin</span>
-                </c:when>
-                <c:otherwise>
-                    <span class="user-badge badge-user">Khách hàng</span>
-                </c:otherwise>
-            </c:choose>
-        </div>
-    </header>
-    
-    <nav>
-        <a href="${pageContext.request.contextPath}/home">🏠 Trang chủ</a>
-        <a href="${pageContext.request.contextPath}/product">📦 Tất cả sản phẩm</a>
-        <a href="${pageContext.request.contextPath}/profile">👤 Thông tin cá nhân</a>
-        <a href="${pageContext.request.contextPath}/dashboard">📊 Dashboard</a>
-        <c:if test="${sessionScope.user.admin}">
-            <a href="${pageContext.request.contextPath}/admin/products" class="admin-link">⚙️ Quản lý Product</a>
-            <a href="${pageContext.request.contextPath}/admin/categories" class="admin-link">📁 Quản lý Category</a>
-        </c:if>
-        <a href="${pageContext.request.contextPath}/logout">🚪 Đăng xuất</a>
-    </nav>
-    
-    <div class="container">
-        <div class="product-detail">
-            <div class="product-image">
-                <c:choose>
-                    <c:when test="${product.image != null && product.image.startsWith('http')}">
-                        <img src="${product.image}" alt="${product.name}">
-                    </c:when>
-                    <c:otherwise>
-                        <img src="${pageContext.request.contextPath}/image?fname=${product.image}" alt="${product.name}">
-                    </c:otherwise>
-                </c:choose>
-            </div>
-            <div class="product-info">
-                <h2 class="product-name">${product.name}</h2>
-                <p class="product-price">
-                    <fmt:formatNumber value="${product.price}" type="number" pattern="#,###"/> đ
-                </p>
-                <p class="category-name">📁 Danh mục: <strong>${product.category.categoryname}</strong></p>
-                <p class="product-quantity">Số lượng tồn kho: <strong>${product.quantity}</strong></p>
-                <div class="product-desc">
-                    <strong>Mô tả sản phẩm:</strong><br>
-                    ${product.description != null && !product.description.isEmpty() ? product.description : "Đang cập nhật mô tả..."}
-                </div>
-                <div class="btn-group">
-                    <a href="${pageContext.request.contextPath}/product" class="btn-back">⬅️ Quay lại danh sách</a>
-                    <%-- Chỉ Admin mới được hiển thị nút Sửa sản phẩm --%>
-                    <c:if test="${sessionScope.user.admin}">
-                        <a href="${pageContext.request.contextPath}/admin/product/edit?id=${product.id}" class="btn-edit">✏️ Sửa sản phẩm này</a>
-                    </c:if>
+    <div class="container py-3">
+        <!-- Navigation Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/home" class="text-decoration-none">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/products" class="text-decoration-none">Sản phẩm</a></li>
+                <li class="breadcrumb-item active" aria-current="page">${product.name}</li>
+            </ol>
+        </nav>
+
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
+            <div class="card-body p-4 p-md-5">
+                <div class="row g-5">
+                    <!-- Ảnh sản phẩm -->
+                    <div class="col-md-5 text-center">
+                        <c:choose>
+                            <c:when test="${product.image != null && product.image.startsWith('http')}">
+                                <c:set var="imgUrl" value="${product.image}" />
+                            </c:when>
+                            <c:otherwise>
+                                <c:url value="/image?fname=${product.image}" var="imgUrl" />
+                            </c:otherwise>
+                        </c:choose>
+                        <div class="p-3 bg-light rounded-3 border text-center">
+                            <img src="${imgUrl}" alt="${product.name}" 
+                                 class="img-fluid rounded" style="max-height: 380px; object-fit: contain;"
+                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/350x350?text=No+Image';">
+                        </div>
+                    </div>
+
+                    <!-- Thông tin sản phẩm -->
+                    <div class="col-md-7 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 mb-2">
+                                <i class="bi bi-tag me-1"></i>${product.category != null ? product.category.categoryname : 'Mặt hàng'}
+                            </span>
+                            <h2 class="fw-bold text-dark mb-3">${product.name}</h2>
+                            <h3 class="fw-bold text-danger mb-3">
+                                <fmt:formatNumber value="${product.price}" type="number" groupingUsed="true"/> đ
+                            </h3>
+
+                            <div class="mb-3">
+                                <span class="text-muted fw-semibold">Tình trạng kho:</span>
+                                <c:choose>
+                                    <c:when test="${product.quantity > 0}">
+                                        <span class="badge bg-success-subtle text-success ms-2 px-2 py-1">
+                                            Còn hàng (${product.quantity} sản phẩm)
+                                        </span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="badge bg-danger-subtle text-danger ms-2 px-2 py-1">Hết hàng</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+
+                            <div class="card bg-light border-0 rounded-3 p-3 mb-4">
+                                <h6 class="fw-bold text-dark mb-2"><i class="bi bi-info-circle me-1"></i>Mô tả sản phẩm:</h6>
+                                <p class="text-muted mb-0 small" style="white-space: pre-line;">
+                                    ${not empty product.description ? product.description : 'Đang cập nhật thông tin mô tả chi tiết cho sản phẩm này.'}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 pt-3 border-top">
+                            <a href="${pageContext.request.contextPath}/products" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
+                            </a>
+                            <c:if test="${sessionScope.user.admin}">
+                                <a href="${pageContext.request.contextPath}/admin/product/edit?id=${product.id}" class="btn btn-warning fw-semibold text-dark">
+                                    <i class="bi bi-pencil-square me-1"></i>Chỉnh sửa (Admin)
+                                </a>
+                            </c:if>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <footer>
-        <p>&copy; 2026 JPA API E-Commerce - Dự án Lập trình Web</p>
-    </footer>
 </body>
 </html>
